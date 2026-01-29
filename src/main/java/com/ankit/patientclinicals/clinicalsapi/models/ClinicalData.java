@@ -2,15 +2,18 @@
 package com.ankit.patientclinicals.clinicalsapi.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.sql.Timestamp;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "clinicaldata")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ClinicalData {
 
     @Id
@@ -18,9 +21,11 @@ public class ClinicalData {
     private Long id;
 
     @Column(name = "component_name", nullable = false)
+    @NotBlank(message = "Component name is required")
     private String componentName;
 
     @Column(name = "component_value", nullable = false)
+    @NotBlank(message = "Component value is required")
     private String componentValue;
 
     @Column(name = "measured_date_time", nullable = false)
