@@ -6,13 +6,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
 
-import jakarta.persistence.Column;
-
 @Entity
 @Table(name = "patient")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Patient {
 
     @Id
@@ -20,12 +25,18 @@ public class Patient {
     private Long id;
 
     @Column(name = "first_name", nullable = false, length = 100)
+    @NotBlank(message = "First name is required and cannot be empty")
+    @Size(min = 1, max = 100, message = "First name must be between 1 and 100 characters")
     private String firstName;
 
     @Column(name = "last_name", nullable = false, length = 100)
+    @NotBlank(message = "Last name is required and cannot be empty")
+    @Size(min = 1, max = 100, message = "Last name must be between 1 and 100 characters")
     private String lastName;
 
     @Column(nullable = false)
+    @Min(value = 1, message = "Age must be at least 1")
+    @Max(value = 150, message = "Age must not exceed 150")
     private Integer age;
 
     @OneToMany(mappedBy = "patient")
