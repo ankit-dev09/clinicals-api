@@ -52,7 +52,6 @@ public class ClinicalDataService {
      * @return Saved clinical data
      */
     public ClinicalData createClinicalData(ClinicalData clinicalData) {
-        validateClinicalData(clinicalData);
         return clinicalDataRepository.save(clinicalData);
     }
 
@@ -67,7 +66,6 @@ public class ClinicalDataService {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("Clinical Data ID must be a positive number");
         }
-        validateClinicalData(clinicalDataDetails);
         
         ClinicalData clinicalData = clinicalDataRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Clinical data not found with ID: " + id));
@@ -101,8 +99,6 @@ public class ClinicalDataService {
      * @throws ResourceNotFoundException if patient not found
      */
     public ClinicalData saveClinicalDataByPatientId(ClinicalDataDTO clinicalDataDTO) {
-        validateClinicalDataDTO(clinicalDataDTO);
-        
         Patient patient = patientRepository.findById(clinicalDataDTO.getPatientId())
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found with ID: " + clinicalDataDTO.getPatientId()));
         
@@ -112,51 +108,5 @@ public class ClinicalDataService {
         clinicalData.setPatient(patient);
         
         return clinicalDataRepository.save(clinicalData);
-    }
-
-    /**
-     * Validate clinical data fields
-     * @param clinicalData - ClinicalData to validate
-     * @throws IllegalArgumentException if validation fails
-     */
-    private void validateClinicalData(ClinicalData clinicalData) {
-        if (clinicalData == null) {
-            throw new IllegalArgumentException("Clinical data cannot be null");
-        }
-        
-        if (clinicalData.getComponentName() == null || clinicalData.getComponentName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Component name is required and cannot be empty");
-        }
-        
-        if (clinicalData.getComponentValue() == null || clinicalData.getComponentValue().trim().isEmpty()) {
-            throw new IllegalArgumentException("Component value is required and cannot be empty");
-        }
-        
-        if (clinicalData.getMeasuredDateTime() == null) {
-            throw new IllegalArgumentException("Measured date time is required");
-        }
-    }
-
-    /**
-     * Validate clinical data DTO fields
-     * @param clinicalDataDTO - ClinicalDataDTO to validate
-     * @throws IllegalArgumentException if validation fails
-     */
-    private void validateClinicalDataDTO(ClinicalDataDTO clinicalDataDTO) {
-        if (clinicalDataDTO == null) {
-            throw new IllegalArgumentException("Clinical data DTO cannot be null");
-        }
-        
-        if (clinicalDataDTO.getComponentName() == null || clinicalDataDTO.getComponentName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Component name is required and cannot be empty");
-        }
-        
-        if (clinicalDataDTO.getComponentValue() == null || clinicalDataDTO.getComponentValue().trim().isEmpty()) {
-            throw new IllegalArgumentException("Component value is required and cannot be empty");
-        }
-        
-        if (clinicalDataDTO.getPatientId() == null || clinicalDataDTO.getPatientId() <= 0) {
-            throw new IllegalArgumentException("Patient ID must be a positive number");
-        }
     }
 }

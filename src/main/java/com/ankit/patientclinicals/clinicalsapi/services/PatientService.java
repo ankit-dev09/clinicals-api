@@ -46,7 +46,6 @@ public class PatientService {
      * @return Saved patient
      */
     public Patient createPatient(Patient patient) {
-        validatePatient(patient);
         return patientRepository.save(patient);
     }
 
@@ -61,7 +60,6 @@ public class PatientService {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("Patient ID must be a positive number");
         }
-        validatePatient(patientDetails);
         
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found with ID: " + id));
@@ -86,40 +84,5 @@ public class PatientService {
             throw new ResourceNotFoundException("Patient not found with ID: " + id);
         }
         patientRepository.deleteById(id);
-    }
-
-    /**
-     * Validate patient fields
-     * @param patient - Patient to validate
-     * @throws IllegalArgumentException if validation fails
-     */
-    private void validatePatient(Patient patient) {
-        if (patient == null) {
-            throw new IllegalArgumentException("Patient cannot be null");
-        }
-        
-        if (patient.getFirstName() == null || patient.getFirstName().trim().isEmpty()) {
-            throw new IllegalArgumentException("First name is required and cannot be empty");
-        }
-        
-        if (patient.getFirstName().length() > 100) {
-            throw new IllegalArgumentException("First name must not exceed 100 characters");
-        }
-        
-        if (patient.getLastName() == null || patient.getLastName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Last name is required and cannot be empty");
-        }
-        
-        if (patient.getLastName().length() > 100) {
-            throw new IllegalArgumentException("Last name must not exceed 100 characters");
-        }
-        
-        if (patient.getAge() == null || patient.getAge() <= 0) {
-            throw new IllegalArgumentException("Age must be a positive number");
-        }
-        
-        if (patient.getAge() > 150) {
-            throw new IllegalArgumentException("Age must be less than or equal to 150");
-        }
     }
 }
